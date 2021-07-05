@@ -3,7 +3,7 @@ Pistachio aims to simplify reoccurring tasks when working with the file system.
 
 ## Developing
 
-Hello World To install helloworld, along with the tools you need to develop and run tests, run the following in your virtualenv:
+To install pistachio, along with the tools you need to develop and run tests, run the following in your virtualenv:
 
 ```bash
 $ pip install -e .[dev]
