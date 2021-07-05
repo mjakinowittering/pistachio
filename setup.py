@@ -26,6 +26,7 @@ setup(
             "pytest >= 3.7",
             "flake8",
             "check-manifest",
+            "schema",
             "twine",
         ],
     },
