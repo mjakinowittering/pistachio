@@ -25,6 +25,10 @@ To use pistachio you can inport the module by running the following commands.
 >>> import pistachio
 ```
 
+### Describe
+
+TODO
+
 ### Exists
 
 You can confirm if a directory, file or symbolic link exists using the following method.
@@ -32,3 +36,31 @@ You can confirm if a directory, file or symbolic link exists using the following
 ```python
 >>> pistachio.exists('README.md')
 True
+```
+
+### Is Directory
+
+Is the resource a directory? True or False.
+
+```python
+>>> pistachio.is_directory('README.md')
+False
+```
+
+### Is File
+
+Is the resource a file? True or False.
+
+```python
+>>> pistachio.is_file('README.md')
+True
+```
+
+### Is Symlink
+
+Is the resource a symbolic link? True or False.
+
+```python
+>>> pistachio.is_symlink('README.md')
+False
+```
