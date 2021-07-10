@@ -27,7 +27,12 @@ To use pistachio you can inport the module by running the following commands.
 
 ### Describe
 
-TODO
+Method to return a description for the resource.
+
+```python
+>>> pistachio.describe('README.md')
+{'abspath': '/path/to/file/README.md', 'exists': True, 'is_directory': False, 'is_file': True, 'is_symlink': False, 'name': 'README.md'}
+```
 
 ### Exists
 
