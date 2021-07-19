@@ -3,11 +3,18 @@ from schema import Schema, And, Use, SchemaError
 from src import pistachio
 
 
+import json
 import pytest
 
 
+TREE_SCHEMA = Schema({
+    "path": And(Use(str)),
+    "results": And(Use(list))
+})
+
+
 DESCRIBE_SCHEMA = Schema({
-    "abspath": And(Use(str)),
+    "path": And(Use(str)),
     "exists": And(Use(bool)),
     "is_directory": And(Use(bool)),
     "is_file": And(Use(bool)),
@@ -36,6 +43,14 @@ def setup_module():
         fh.write("The quick brown fox jumps over the lazy dog\n")
         fh.close()
 
+    Path('./tests/abc/').mkdir()
+    Path('./tests/abc/xyz/').mkdir()
+
+    Path('./tests/abc/file-1.txt').touch()
+    Path('./tests/abc/file-2.txt').symlink_to('./tests/abc/file-1.txt')
+    Path('./tests/abc/xyz/file-3.txt').touch()
+    Path('./tests/abc/xyz/file-4.txt').touch()
+
 
 def teardown_module():
     """
@@ -43,6 +58,68 @@ def teardown_module():
     """
     Path("README.doc").unlink()
     Path("example.txt").unlink()
+
+    Path('./tests/abc/file-1.txt').unlink()
+    Path('./tests/abc/file-2.txt').unlink()
+    Path('./tests/abc/xyz/file-3.txt').unlink()
+    Path('./tests/abc/xyz/file-4.txt').unlink()
+
+    Path('./tests/abc/xyz/').rmdir()
+    Path('./tests/abc/').rmdir()
+
+
+@pytest.fixture
+def tree_expected_results():
+    return json.dumps({
+        "path": "./tests/abc",
+        "results": [
+            {
+                "path": "./file-1.txt",
+                "exists": True,
+                "is_directory": False,
+                "is_file": True,
+                "is_symlink": False,
+                "name": "file-1.txt",
+                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+            },
+            {
+                "path": "./file-2.txt",
+                "exists": False,
+                "is_directory": False,
+                "is_file": False,
+                "is_symlink": True,
+                "name": "file-2.txt",
+                "md5": None
+            },
+            {
+                "path": "./xyz",
+                "exists": True,
+                "is_directory": True,
+                "is_file": False,
+                "is_symlink": False,
+                "name": "xyz",
+                "md5": None
+            },
+            {
+                "path": "./xyz/file-3.txt",
+                "exists": True,
+                "is_directory": False,
+                "is_file": True,
+                "is_symlink": False,
+                "name": "file-3.txt",
+                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+            },
+            {
+                "path": "./xyz/file-4.txt",
+                "exists": True,
+                "is_directory": False,
+                "is_file": True,
+                "is_symlink": False,
+                "name": "file-4.txt",
+                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+            }
+        ]
+    }, sort_keys = True)
 
 
 def test_describe_schema_directory():
@@ -69,14 +146,14 @@ def test_describe_schema_symlink():
     assert schema_validation(example, DESCRIBE_SCHEMA) is True
 
 
-def test_exists_true():
+def test_exists_True():
     """
     Test to confirm the exists method returns True.
     """
     assert pistachio.exists("README.md") is True
 
 
-def test_exists_false():
+def test_exists_False():
     """
     Test to confirm the exists method returns False.
     """
@@ -91,59 +168,87 @@ def test_get_md5_hash():
     assert md5_hash_str == "37c4b87edffc5d198ff5a185cee7ee09"
 
 
-def test_get_md5_hash_returns_false():
+def test_get_md5_hash_returns_none():
     """
-    Test to confirm the get_md5_hash method returns False.
+    Test to confirm the get_md5_hash method returns None.
     """
-    with pytest.raises(FileNotFoundError):
-        pistachio.get_md5_hash("example.doc")
+    assert pistachio.get_md5_hash("example.docx") is None
 
 
-def test_is_directory_true():
+def test_is_directory_True():
     """
     Test to confirm the is_directory method returns True.
     """
     assert pistachio.is_directory("tests") is True
 
 
-def test_is_directory_false():
+def test_is_directory_False():
     """
     Test to confirm the is_directory method returns False.
     """
     assert pistachio.is_directory("LICENSE.md") is False
 
 
-def test_is_file_true():
+def test_is_file_True():
     """
     Test to confirm the is_file method returns True.
     """
     assert pistachio.is_file("README.md") is True
 
 
-def test_is_file_false():
+def test_is_file_False():
     """
     Test to confirm the is_file method returns False.
     """
     assert pistachio.is_file("tests") is False
 
 
-def test_touch_new_file_true():
+def test_touch_new_file_True():
     """
     Test to confirm the touch method returns True.
     """
     assert pistachio.touch("README.doc") is True
 
 
-def test_touch_file_exist_returns_false():
+def test_touch_file_exist_returns_False():
     """
     Test to confirm the touch method returns True.
     """
     assert pistachio.touch("README.md") is False
 
 
-def test_touch_directory_does_not_exist_returns_false():
+def test_touch_directory_does_not_exist_returns_error():
     """
     Test to confirm the touch method raised FileNotFoundError exception.
     """
     with pytest.raises(FileNotFoundError):
         pistachio.touch("docs/README.doc")
+
+
+def test_tree():
+    """
+    Test to confirm that the tree method returns a list of dictionaries.
+    """
+    r = pistachio.tree("tests/abc/")
+
+    assert schema_validation(r, TREE_SCHEMA) is True
+    assert all(
+        schema_validation(i, DESCRIBE_SCHEMA) is True for i in r["results"]
+    )
+
+
+def test_tree_results(tree_expected_results):
+    """
+    Test to confirm that the tree method returns a list of dictionaries.
+    """
+    results = json.dumps(pistachio.tree("./tests/abc"), sort_keys = True)
+
+    assert tree_expected_results == results
+
+
+def test_tree_no_directory():
+    """
+    Test to confirm the tree method raised FileNotFoundError exception.
+    """
+    with pytest.raises(FileNotFoundError):
+        pistachio.tree("docs")
