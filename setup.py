@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pistachio",
-    version="0.0.1",
+    version="0.1.0",
     description="Pistachio aims to simplify reoccurring tasks when working with the file system.",
     py_modules=["pistachio"],
     package_dir={"": "src"},
@@ -26,6 +26,7 @@ setup(
             "pytest >= 3.7",
             "flake8",
             "check-manifest",
+            "schema",
             "twine",
         ],
     },
