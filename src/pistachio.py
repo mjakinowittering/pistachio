@@ -16,8 +16,7 @@ def describe(path_str):
         "is_directory": is_directory(path_str),
         "is_file": is_file(path_str),
         "is_symlink": is_symlink(path_str),
-        "name": path_str.split("/")[-1],
-        "md5": get_md5_hash(path_str)
+        "name": path_str.split("/")[-1]
     }
 
 

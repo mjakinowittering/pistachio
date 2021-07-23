@@ -19,7 +19,6 @@ DESCRIBE_SCHEMA = Schema({
     "is_directory": And(Use(bool)),
     "is_file": And(Use(bool)),
     "is_symlink": And(Use(bool)),
-    "md5": And(Use(str)),
     "name": And(Use(str))
 })
 
@@ -79,8 +78,7 @@ def tree_expected_results():
                 "is_directory": False,
                 "is_file": True,
                 "is_symlink": False,
-                "name": "file-1.txt",
-                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+                "name": "file-1.txt"
             },
             {
                 "path": "./file-2.txt",
@@ -88,8 +86,7 @@ def tree_expected_results():
                 "is_directory": False,
                 "is_file": False,
                 "is_symlink": True,
-                "name": "file-2.txt",
-                "md5": None
+                "name": "file-2.txt"
             },
             {
                 "path": "./xyz",
@@ -97,8 +94,7 @@ def tree_expected_results():
                 "is_directory": True,
                 "is_file": False,
                 "is_symlink": False,
-                "name": "xyz",
-                "md5": None
+                "name": "xyz"
             },
             {
                 "path": "./xyz/file-3.txt",
@@ -106,8 +102,7 @@ def tree_expected_results():
                 "is_directory": False,
                 "is_file": True,
                 "is_symlink": False,
-                "name": "file-3.txt",
-                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+                "name": "file-3.txt"
             },
             {
                 "path": "./xyz/file-4.txt",
@@ -115,8 +110,7 @@ def tree_expected_results():
                 "is_directory": False,
                 "is_file": True,
                 "is_symlink": False,
-                "name": "file-4.txt",
-                "md5": "d41d8cd98f00b204e9800998ecf8427e"
+                "name": "file-4.txt"
             }
         ]
     }, sort_keys = True)
