@@ -30,9 +30,18 @@ To use pistachio you can inport the module by running the following commands.
 Method to return a description for the resource.
 
 ```python
->>> pistachio.describe("README.md")
-{"path": "README.md", "exists": True, "is_directory": False, "is_file": True, "is_symlink": False, "name": "README.md", "md5": "2f853812babf98322618edeb24359591"}
+>>> print(json.dumps(pistachio.describe("README.md"), sort_keys=2, indent=2))
+{
+  "exists": true,
+  "is_directory": false,
+  "is_file": true,
+  "is_symlink": false,
+  "name": "README.md",
+  "path": "README.md"
+}
 ```
+
+print(json.dumps(pistachio.tree("src"), sort_keys=2, indent=2))
 
 ### Exists
 
@@ -102,7 +111,6 @@ This method will return a list of directories, files and symlinks below a specif
       "is_directory": false,
       "is_file": true,
       "is_symlink": false,
-      "md5": "d41d8cd98f00b204e9800998ecf8427e",
       "name": "__init__.py",
       "path": "./__init__.py"
     },
@@ -111,7 +119,6 @@ This method will return a list of directories, files and symlinks below a specif
       "is_directory": false,
       "is_file": true,
       "is_symlink": false,
-      "md5": "fdf4baea582e9b6198904292429a2d00",
       "name": "pistachio.py",
       "path": "./pistachio.py"
     }
