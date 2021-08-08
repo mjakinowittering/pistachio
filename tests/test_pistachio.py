@@ -63,57 +63,87 @@ def teardown_module():
     Path('./tests/abc/xyz/file-3.txt').unlink()
     Path('./tests/abc/xyz/file-4.txt').unlink()
 
+    Path('./tests/abc/ghi/jkl/').rmdir()
+    Path('./tests/abc/ghi/').rmdir()
+    Path('./tests/abc/def/').rmdir()
     Path('./tests/abc/xyz/').rmdir()
     Path('./tests/abc/').rmdir()
 
 
 @pytest.fixture
 def tree_expected_results():
-    return json.dumps({
-        "path": "./tests/abc",
-        "results": [
-            {
-                "path": "./file-1.txt",
-                "exists": True,
-                "is_directory": False,
-                "is_file": True,
-                "is_symlink": False,
-                "name": "file-1.txt"
-            },
-            {
-                "path": "./file-2.txt",
-                "exists": False,
-                "is_directory": False,
-                "is_file": False,
-                "is_symlink": True,
-                "name": "file-2.txt"
-            },
-            {
-                "path": "./xyz",
-                "exists": True,
-                "is_directory": True,
-                "is_file": False,
-                "is_symlink": False,
-                "name": "xyz"
-            },
-            {
-                "path": "./xyz/file-3.txt",
-                "exists": True,
-                "is_directory": False,
-                "is_file": True,
-                "is_symlink": False,
-                "name": "file-3.txt"
-            },
-            {
-                "path": "./xyz/file-4.txt",
-                "exists": True,
-                "is_directory": False,
-                "is_file": True,
-                "is_symlink": False,
-                "name": "file-4.txt"
-            }
-        ]
-    }, sort_keys = True)
+    return json.dumps(
+        {
+            "path": "./tests/abc",
+            "results": [
+                {
+                    "path": "./def",
+                    "exists": True,
+                    "is_directory": True,
+                    "is_file": False,
+                    "is_symlink": False,
+                    "name": "def"
+                },
+                {
+                    "path": "./file-1.txt",
+                    "exists": True,
+                    "is_directory": False,
+                    "is_file": True,
+                    "is_symlink": False,
+                    "name": "file-1.txt"
+                },
+                {
+                    "path": "./file-2.txt",
+                    "exists": False,
+                    "is_directory": False,
+                    "is_file": False,
+                    "is_symlink": True,
+                    "name": "file-2.txt"
+                },
+                {
+                    "path": "./ghi",
+                    "exists": True,
+                    "is_directory": True,
+                    "is_file": False,
+                    "is_symlink": False,
+                    "name": "ghi"
+                },
+                {
+                    "path": "./ghi/jkl",
+                    "exists": True,
+                    "is_directory": True,
+                    "is_file": False,
+                    "is_symlink": False,
+                    "name": "jkl"
+                },
+                {
+                    "path": "./xyz",
+                    "exists": True,
+                    "is_directory": True,
+                    "is_file": False,
+                    "is_symlink": False,
+                    "name": "xyz"
+                },
+                {
+                    "path": "./xyz/file-3.txt",
+                    "exists": True,
+                    "is_directory": False,
+                    "is_file": True,
+                    "is_symlink": False,
+                    "name": "file-3.txt"
+                },
+                {
+                    "path": "./xyz/file-4.txt",
+                    "exists": True,
+                    "is_directory": False,
+                    "is_file": True,
+                    "is_symlink": False,
+                    "name": "file-4.txt"
+                }
+            ]
+        },
+        sort_keys=True
+    )
 
 
 def test_describe_schema_directory():
@@ -197,6 +227,26 @@ def test_is_file_False():
     assert pistachio.is_file("tests") is False
 
 
+def test_make_directory():
+    """
+    Method to verify that a directory can be created.
+    """
+    path_str = './tests/abc/def/'
+    pistachio.make_directory(path_str)
+
+    assert Path(path_str).exists() is True
+
+
+def test_make_directory_recursively():
+    """
+    Method to verify that a directory path can be created recursively.
+    """
+    path_str = './tests/abc/ghi/jkl/'
+    pistachio.make_directory(path_str)
+
+    assert Path(path_str).exists() is True
+
+
 def test_touch_new_file_True():
     """
     Test to confirm the touch method returns True.
@@ -235,7 +285,10 @@ def test_tree_results(tree_expected_results):
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    results = json.dumps(pistachio.tree("./tests/abc"), sort_keys = True)
+    results = json.dumps(
+        pistachio.tree("./tests/abc"),
+        sort_keys=True
+    )
 
     assert tree_expected_results == results
 
