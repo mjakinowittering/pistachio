@@ -63,6 +63,13 @@ def is_symlink(path_str):
     return Path(path_str).is_symlink()
 
 
+def make_directory(path_str):
+    """
+    Method to create a new directory or directories recursively.
+    """
+    return Path(path_str).mkdir(parents=True, exist_ok=True)
+
+
 def touch(path_str):
     """
     Method to generated an empty file.
@@ -85,7 +92,7 @@ def tree(path_str):
     and directories on the file system.
     """
     results_lst = []
-    
+
     if exists(path_str) and is_directory(path_str):
         initial_path_str = os.getcwd()
         os.chdir(path_str)
