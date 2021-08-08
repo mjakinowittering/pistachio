@@ -88,6 +88,16 @@ Is the resource a symbolic link? True or False.
 False
 ```
 
+### Make Directory
+
+Make a new directory or directory tree.
+
+```python
+>>> pistachio.make_directory("src")
+>>> pistachio.exists("src")
+True
+```
+
 ### Touch
 
 This method will create an empty file with a given filename and directory path.
