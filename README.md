@@ -37,7 +37,9 @@ Method to return a description for the resource.
   "is_file": true,
   "is_symlink": false,
   "name": "README.md",
-  "path": "README.md"
+  "path": "README.md",
+  "stem": "README",
+  "suffix": ".md"
 }
 ```
 
@@ -122,7 +124,9 @@ This method will return a list of directories, files and symlinks below a specif
       "is_file": true,
       "is_symlink": false,
       "name": "__init__.py",
-      "path": "./__init__.py"
+      "path": "./__init__.py",
+      "stem": "__init__",
+      "suffix": ".py"
     },
     {
       "exists": true,
@@ -130,7 +134,9 @@ This method will return a list of directories, files and symlinks below a specif
       "is_file": true,
       "is_symlink": false,
       "name": "pistachio.py",
-      "path": "./pistachio.py"
+      "path": "./pistachio.py",
+      "stem": "pistachio",
+      "suffix": ".py"
     }
   ]
 }
