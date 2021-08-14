@@ -19,7 +19,9 @@ DESCRIBE_SCHEMA = Schema({
     "is_directory": And(Use(bool)),
     "is_file": And(Use(bool)),
     "is_symlink": And(Use(bool)),
-    "name": And(Use(str))
+    "name": And(Use(str)),
+    "stem": And(Use(str)),
+    "suffix": And(Use(str))
 })
 
 
@@ -82,7 +84,9 @@ def tree_expected_results():
                     "is_directory": True,
                     "is_file": False,
                     "is_symlink": False,
-                    "name": "def"
+                    "name": "def",
+                    "stem": "def",
+                    "suffix": None
                 },
                 {
                     "path": "./file-1.txt",
@@ -90,7 +94,9 @@ def tree_expected_results():
                     "is_directory": False,
                     "is_file": True,
                     "is_symlink": False,
-                    "name": "file-1.txt"
+                    "name": "file-1.txt",
+                    "stem": "file-1",
+                    "suffix": ".txt"
                 },
                 {
                     "path": "./file-2.txt",
@@ -98,7 +104,9 @@ def tree_expected_results():
                     "is_directory": False,
                     "is_file": False,
                     "is_symlink": True,
-                    "name": "file-2.txt"
+                    "name": "file-2.txt",
+                    "stem": "file-2",
+                    "suffix": ".txt"
                 },
                 {
                     "path": "./ghi",
@@ -106,7 +114,9 @@ def tree_expected_results():
                     "is_directory": True,
                     "is_file": False,
                     "is_symlink": False,
-                    "name": "ghi"
+                    "name": "ghi",
+                    "stem": "ghi",
+                    "suffix": None
                 },
                 {
                     "path": "./ghi/jkl",
@@ -114,7 +124,9 @@ def tree_expected_results():
                     "is_directory": True,
                     "is_file": False,
                     "is_symlink": False,
-                    "name": "jkl"
+                    "name": "jkl",
+                    "stem": "jkl",
+                    "suffix": None
                 },
                 {
                     "path": "./xyz",
@@ -122,7 +134,9 @@ def tree_expected_results():
                     "is_directory": True,
                     "is_file": False,
                     "is_symlink": False,
-                    "name": "xyz"
+                    "name": "xyz",
+                    "stem": "xyz",
+                    "suffix": None
                 },
                 {
                     "path": "./xyz/file-3.txt",
@@ -130,7 +144,9 @@ def tree_expected_results():
                     "is_directory": False,
                     "is_file": True,
                     "is_symlink": False,
-                    "name": "file-3.txt"
+                    "name": "file-3.txt",
+                    "stem": "file-3",
+                    "suffix": ".txt"
                 },
                 {
                     "path": "./xyz/file-4.txt",
@@ -138,10 +154,13 @@ def tree_expected_results():
                     "is_directory": False,
                     "is_file": True,
                     "is_symlink": False,
-                    "name": "file-4.txt"
+                    "name": "file-4.txt",
+                    "stem": "file-4",
+                    "suffix": ".txt"
                 }
             ]
         },
+        indent=2,
         sort_keys=True
     )
 
@@ -247,6 +266,48 @@ def test_make_directory_recursively():
     assert Path(path_str).exists() is True
 
 
+def test_name_example_directory():
+    """
+    Test to confirm the name method returns 'None'.
+    """
+    assert pistachio.name("./foo/example") == 'example'
+
+
+def test_name_example_file():
+    """
+    Test to confirm the name method returns 'example.txt'.
+    """
+    assert pistachio.name("./foo/example.txt") == 'example.txt'
+
+
+def test_stem_example_directory():
+    """
+    Test to confirm the stem method returns 'example'.
+    """
+    assert pistachio.stem("./foo/example") == 'example'
+
+
+def test_stem_example_file():
+    """
+    Test to confirm the stem method returns 'example'.
+    """
+    assert pistachio.stem("./foo/example.txt") == 'example'
+
+
+def test_suffix_example_directory():
+    """
+    Test to confirm the suffix method returns 'None'.
+    """
+    assert pistachio.suffix("./foo/example") == None
+
+
+def test_suffix_example_file():
+    """
+    Test to confirm the suffix method returns '.txt'.
+    """
+    assert pistachio.suffix("./foo/example.txt") == '.txt'
+
+
 def test_touch_new_file_True():
     """
     Test to confirm the touch method returns True.
@@ -287,6 +348,7 @@ def test_tree_results(tree_expected_results):
     """
     results = json.dumps(
         pistachio.tree("./tests/abc"),
+        indent=2,
         sort_keys=True
     )
 

@@ -16,7 +16,9 @@ def describe(path_str):
         "is_directory": is_directory(path_str),
         "is_file": is_file(path_str),
         "is_symlink": is_symlink(path_str),
-        "name": path_str.split("/")[-1]
+        "name": name(path_str),
+        "stem": stem(path_str),
+        "suffix": suffix(path_str)
     }
 
 
@@ -68,6 +70,28 @@ def make_directory(path_str):
     Method to create a new directory or directories recursively.
     """
     return Path(path_str).mkdir(parents=True, exist_ok=True)
+
+
+def name(path_str):
+    """
+    Method to return the name of a resource.
+    """
+    return os.path.basename(path_str)
+
+
+def stem(path_str):
+    """
+    Return the stem of the last item in the path.
+    """
+    return Path(path_str).stem
+
+
+def suffix(path_str):
+    """
+    Return the file extension suffix of the last item in the path.
+    """
+    suffix = Path(path_str).suffix
+    return suffix if suffix != '' else None
 
 
 def touch(path_str):
