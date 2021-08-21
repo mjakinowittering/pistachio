@@ -4,6 +4,29 @@ from pathlib import Path
 import errno
 import hashlib
 import os
+import shutil
+
+
+def copy(source_path_str, target_path_str):
+    """
+    Method to copy and paste a resource from one location to another.
+    """
+    if is_directory(source_path_str):
+        shutil.copytree(
+            source_path_str,
+            target_path_str,
+            symlinks=True,
+            copy_function=shutil.copy
+        )
+
+    if is_file(source_path_str):
+        shutil.copy(
+            source_path_str,
+            target_path_str
+        )
+
+    if is_symlink(source_path_str):
+        Path(target_path_str).symlink_to(os.readlink(source_path_str))
 
 
 def describe(path_str):
