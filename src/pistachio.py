@@ -28,6 +28,8 @@ def copy(source_path_str, target_path_str):
     if is_symlink(source_path_str):
         Path(target_path_str).symlink_to(os.readlink(source_path_str))
 
+    return exists(target_path_str)
+
 
 def describe(path_str):
     """
@@ -49,7 +51,10 @@ def exists(path_str):
     """
     Method to return True or False whether a resource exists.
     """
-    return Path(path_str).exists()
+    if is_symlink(path_str):
+        return True
+    else:
+        return Path(path_str).exists()
 
 
 def get_md5_hash(path_str):

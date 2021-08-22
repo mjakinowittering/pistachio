@@ -112,7 +112,7 @@ def tree_expected_results():
                 },
                 {
                     "path": "./file-2.txt",
-                    "exists": False,
+                    "exists": True,
                     "is_directory": False,
                     "is_file": False,
                     "is_symlink": True,
@@ -182,8 +182,9 @@ def test_copy_file():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    pistachio.copy("example.txt", "example.rtf")
+    result = pistachio.copy("example.txt", "example.rtf")
 
+    assert result is True
     assert Path("example.rtf").exists() is True
 
 
@@ -191,8 +192,9 @@ def test_copy_folder():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    pistachio.copy("./tests/abc", "./tests/123")
+    result = pistachio.copy("./tests/abc", "./tests/123")
 
+    assert result is True
     assert Path("./tests/123").exists() is True
 
 
@@ -200,8 +202,9 @@ def test_copy_symlink():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    pistachio.copy("./tests/abc/file-2.txt", "./tests/123/file-5.txt")
+    result = pistachio.copy("./tests/abc/file-2.txt", "./tests/123/file-5.txt")
 
+    assert result is True
     assert Path("./tests/123/file-5.txt").is_symlink() is True
 
 
