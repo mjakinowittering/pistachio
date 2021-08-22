@@ -8,7 +8,7 @@ import pytest
 import shutil
 
 
-# Schema -----------------------------------------------------------------------
+# Schema ----------------------------------------------------------------------
 TREE_SCHEMA = Schema({
     "path": And(Use(str)),
     "results": And(Use(list))
@@ -38,7 +38,7 @@ def schema_validation(example, schema):
         return False
 
 
-# State ------------------------------------------------------------------------
+# State -----------------------------------------------------------------------
 def setup_module():
     """
     Setup the required resources neccessary to run all the tests.
@@ -75,7 +75,7 @@ def teardown_module():
     shutil.rmtree("./tests/123/")
 
 
-# Fixtures ---------------------------------------------------------------------
+# Fixtures --------------------------------------------------------------------
 @pytest.fixture
 def tree_expected_results():
     return json.dumps(
@@ -189,7 +189,7 @@ def tree_expected_results():
     )
 
 
-# Tests ------------------------------------------------------------------------
+# Tests -----------------------------------------------------------------------
 def test_copy_file():
     """
     Test the method to copy and paste a file on the filesystem.
@@ -329,6 +329,7 @@ def test_mv_directory():
 
     assert result is True
 
+
 def test_mv_file():
     """
     Method to confirm that a file can be moved.
@@ -379,7 +380,7 @@ def test_suffix_example_directory():
     """
     Test to confirm the suffix method returns "None".
     """
-    assert pistachio.suffix("./foo/example") == None
+    assert pistachio.suffix("./foo/example") is None
 
 
 def test_suffix_example_file():
