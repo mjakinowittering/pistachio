@@ -5,6 +5,7 @@ from src import pistachio
 
 import json
 import pytest
+import shutil
 
 
 # Schema -----------------------------------------------------------------------
@@ -46,13 +47,20 @@ def setup_module():
         fh.write("The quick brown fox jumps over the lazy dog\n")
         fh.close()
 
-    Path("./tests/abc/").mkdir()
-    Path("./tests/abc/xyz/").mkdir()
+    Path("./tests/abc").mkdir()
+    Path("./tests/abc/xyz").mkdir()
 
     Path("./tests/abc/file-1.txt").touch()
     Path("./tests/abc/file-2.txt").symlink_to("./tests/abc/file-1.txt")
     Path("./tests/abc/xyz/file-3.txt").touch()
     Path("./tests/abc/xyz/file-4.txt").touch()
+
+    Path("./456").mkdir()
+    Path("./456/789").mkdir()
+    Path("./456/file-8.txt").touch()
+    Path("./456/file-9.txt").symlink_to("./tests/abc/file-1.txt")
+    Path("./file-6.txt").touch()
+    Path("./file-7.txt").symlink_to("./tests/abc/file-1.txt")
 
 
 def teardown_module():
@@ -63,24 +71,8 @@ def teardown_module():
     Path("example.rtf").unlink()
     Path("example.txt").unlink()
 
-    Path("./tests/abc/file-1.txt").unlink()
-    Path("./tests/abc/file-2.txt").unlink()
-    Path("./tests/abc/xyz/file-3.txt").unlink()
-    Path("./tests/abc/xyz/file-4.txt").unlink()
-
-    Path("./tests/123/file-1.txt").unlink()
-    Path("./tests/123/file-2.txt").unlink()
-    Path("./tests/123/file-5.txt").unlink()
-    Path("./tests/123/xyz/file-3.txt").unlink()
-    Path("./tests/123/xyz/file-4.txt").unlink()
-
-    Path("./tests/abc/ghi/jkl/").rmdir()
-    Path("./tests/abc/ghi/").rmdir()
-    Path("./tests/abc/def/").rmdir()
-    Path("./tests/abc/xyz/").rmdir()
-    Path("./tests/abc/").rmdir()
-    Path("./tests/123/xyz/").rmdir()
-    Path("./tests/123/").rmdir()
+    shutil.rmtree("./tests/abc/")
+    shutil.rmtree("./tests/123/")
 
 
 # Fixtures ---------------------------------------------------------------------
@@ -118,6 +110,26 @@ def tree_expected_results():
                     "is_symlink": True,
                     "name": "file-2.txt",
                     "stem": "file-2",
+                    "suffix": ".txt"
+                },
+                {
+                    "path": "./file-6.txt",
+                    "exists": True,
+                    "is_directory": False,
+                    "is_file": True,
+                    "is_symlink": False,
+                    "name": "file-6.txt",
+                    "stem": "file-6",
+                    "suffix": ".txt"
+                },
+                {
+                    "path": "./file-7.txt",
+                    "exists": True,
+                    "is_directory": False,
+                    "is_file": False,
+                    "is_symlink": True,
+                    "name": "file-7.txt",
+                    "stem": "file-7",
                     "suffix": ".txt"
                 },
                 {
@@ -182,7 +194,7 @@ def test_copy_file():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.copy("example.txt", "example.rtf")
+    result = pistachio.cp("example.txt", "example.rtf")
 
     assert result is True
     assert Path("example.rtf").exists() is True
@@ -192,7 +204,7 @@ def test_copy_folder():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.copy("./tests/abc", "./tests/123")
+    result = pistachio.cp("./tests/abc", "./tests/123")
 
     assert result is True
     assert Path("./tests/123").exists() is True
@@ -202,7 +214,7 @@ def test_copy_symlink():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.copy("./tests/abc/file-2.txt", "./tests/123/file-5.txt")
+    result = pistachio.cp("./tests/abc/file-2.txt", "./tests/123/file-5.txt")
 
     assert result is True
     assert Path("./tests/123/file-5.txt").is_symlink() is True
@@ -293,8 +305,8 @@ def test_make_directory():
     """
     Method to verify that a directory can be created.
     """
-    path_str = "./tests/abc/def/"
-    pistachio.make_directory(path_str)
+    path_str = "./tests/abc/def"
+    pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
 
@@ -303,10 +315,36 @@ def test_make_directory_recursively():
     """
     Method to verify that a directory path can be created recursively.
     """
-    path_str = "./tests/abc/ghi/jkl/"
-    pistachio.make_directory(path_str)
+    path_str = "./tests/abc/ghi/jkl"
+    pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
+
+
+def test_mv_directory():
+    """
+    Method to confirm that a directory can be moved.
+    """
+    result = pistachio.mv("./456", "./tests/123/456")
+
+    assert result is True
+
+def test_mv_file():
+    """
+    Method to confirm that a file can be moved.
+    """
+    result = pistachio.mv("./file-6.txt", "./tests/abc/file-6.txt")
+
+    assert result is True
+
+
+def test_mv_symlink():
+    """
+    Method to confirm that a symlink can be moved.
+    """
+    result = pistachio.mv("./file-7.txt", "./tests/abc/file-7.txt")
+
+    assert result is True
 
 
 def test_name_example_directory():
@@ -377,7 +415,7 @@ def test_tree():
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    r = pistachio.tree("tests/abc/")
+    r = pistachio.tree("tests/abc")
 
     assert schema_validation(r, TREE_SCHEMA) is True
     assert all(

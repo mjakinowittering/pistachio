@@ -95,7 +95,7 @@ False
 Make a new directory or directory tree.
 
 ```python
->>> pistachio.make_directory("src")
+>>> pistachio.mkdir("src")
 >>> pistachio.exists("src")
 True
 ```
