@@ -4,6 +4,31 @@ from pathlib import Path
 import errno
 import hashlib
 import os
+import shutil
+
+
+def cp(source_path_str, target_path_str):
+    """
+    Method to copy and paste a resource from one location to another.
+    """
+    if is_directory(source_path_str):
+        shutil.copytree(
+            source_path_str,
+            target_path_str,
+            symlinks=True,
+            copy_function=shutil.copy
+        )
+
+    if is_file(source_path_str):
+        shutil.copy(
+            source_path_str,
+            target_path_str
+        )
+
+    if is_symlink(source_path_str):
+        Path(target_path_str).symlink_to(os.readlink(source_path_str))
+
+    return exists(target_path_str)
 
 
 def describe(path_str):
@@ -26,7 +51,10 @@ def exists(path_str):
     """
     Method to return True or False whether a resource exists.
     """
-    return Path(path_str).exists()
+    if is_symlink(path_str):
+        return True
+    else:
+        return Path(path_str).exists()
 
 
 def get_md5_hash(path_str):
@@ -65,11 +93,20 @@ def is_symlink(path_str):
     return Path(path_str).is_symlink()
 
 
-def make_directory(path_str):
+def mkdir(path_str):
     """
     Method to create a new directory or directories recursively.
     """
     return Path(path_str).mkdir(parents=True, exist_ok=True)
+
+
+def mv(source_path_str, target_path_str):
+    """
+    Method to move a resource from one location to another.
+    """
+    os.rename(source_path_str, target_path_str)
+
+    return exists(target_path_str)
 
 
 def name(path_str):
