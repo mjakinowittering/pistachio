@@ -128,6 +128,14 @@ def suffix(path_str):
     Return the file extension suffix of the last item in the path.
     """
     suffix = Path(path_str).suffix
+
+    clean = [
+        (".", "")
+    ]
+
+    for old, new in clean:
+        suffix = suffix.replace(old, new)
+
     return suffix if suffix != '' else None
 
 
