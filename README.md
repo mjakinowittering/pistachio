@@ -39,7 +39,7 @@ Method to return a description for the resource.
   "name": "README.md",
   "path": "README.md",
   "stem": "README",
-  "suffix": ".md"
+  "suffix": "md"
 }
 ```
 
@@ -126,7 +126,7 @@ This method will return a list of directories, files and symlinks below a specif
       "name": "__init__.py",
       "path": "./__init__.py",
       "stem": "__init__",
-      "suffix": ".py"
+      "suffix": "py"
     },
     {
       "exists": true,
@@ -136,7 +136,7 @@ This method will return a list of directories, files and symlinks below a specif
       "name": "pistachio.py",
       "path": "./pistachio.py",
       "stem": "pistachio",
-      "suffix": ".py"
+      "suffix": "py"
     }
   ]
 }
