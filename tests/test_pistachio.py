@@ -100,7 +100,7 @@ def tree_expected_results():
                     "is_symlink": False,
                     "name": "file-1.txt",
                     "stem": "file-1",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 },
                 {
                     "path": "./file-2.txt",
@@ -110,7 +110,7 @@ def tree_expected_results():
                     "is_symlink": True,
                     "name": "file-2.txt",
                     "stem": "file-2",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 },
                 {
                     "path": "./file-6.txt",
@@ -120,7 +120,7 @@ def tree_expected_results():
                     "is_symlink": False,
                     "name": "file-6.txt",
                     "stem": "file-6",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 },
                 {
                     "path": "./file-7.txt",
@@ -130,7 +130,7 @@ def tree_expected_results():
                     "is_symlink": True,
                     "name": "file-7.txt",
                     "stem": "file-7",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 },
                 {
                     "path": "./ghi",
@@ -170,7 +170,7 @@ def tree_expected_results():
                     "is_symlink": False,
                     "name": "file-3.txt",
                     "stem": "file-3",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 },
                 {
                     "path": "./xyz/file-4.txt",
@@ -180,7 +180,7 @@ def tree_expected_results():
                     "is_symlink": False,
                     "name": "file-4.txt",
                     "stem": "file-4",
-                    "suffix": ".txt"
+                    "suffix": "txt"
                 }
             ]
         },
@@ -387,7 +387,7 @@ def test_suffix_example_file():
     """
     Test to confirm the suffix method returns ".txt".
     """
-    assert pistachio.suffix("./foo/example.txt") == ".txt"
+    assert pistachio.suffix("./foo/example.txt") == "txt"
 
 
 def test_touch_new_file_true():
