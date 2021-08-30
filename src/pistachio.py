@@ -104,7 +104,7 @@ def mv(source_path_str, target_path_str):
     """
     Method to move a resource from one location to another.
     """
-    os.rename(source_path_str, target_path_str)
+    shutil.move(source_path_str, target_path_str)
 
     return exists(target_path_str)
 
