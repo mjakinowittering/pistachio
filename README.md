@@ -90,7 +90,16 @@ Is the resource a symbolic link? True or False.
 False
 ```
 
-### Make Directory
+### Make a Symlink
+
+Make a new symbolic link.
+
+```python
+>>> pistachio.ln("README.txt", "README.md")
+False
+```
+
+### Make a Directory
 
 Make a new directory or directory tree.
 
