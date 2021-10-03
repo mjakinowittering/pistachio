@@ -93,6 +93,15 @@ def is_symlink(path_str):
     return Path(path_str).is_symlink()
 
 
+def ln(link_path_str, source_path_str):
+    """
+    Method to make a Symbolic Link.
+    """
+    Path(link_path_str).symlink_to(source_path_str)
+
+    return exists(link_path_str)
+
+
 def mkdir(path_str):
     """
     Method to create a new directory or directories recursively.

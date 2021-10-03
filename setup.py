@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="pistachio",
-    version="0.4.2",
+    version="0.5.0",
     description="Pistachio aims to simplify reoccurring tasks when working with the file system.",
     py_modules=["pistachio"],
     package_dir={"": "src"},
