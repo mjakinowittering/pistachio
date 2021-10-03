@@ -47,20 +47,21 @@ def setup_module():
         fh.write("The quick brown fox jumps over the lazy dog\n")
         fh.close()
 
-    Path("./tests/abc").mkdir()
-    Path("./tests/abc/xyz").mkdir()
+    Path("./tmp").mkdir()
+    Path("./tmp/abc").mkdir()
+    Path("./tmp/abc/xyz").mkdir()
 
-    Path("./tests/abc/file-1.txt").touch()
-    Path("./tests/abc/file-2.txt").symlink_to("./tests/abc/file-1.txt")
-    Path("./tests/abc/xyz/file-3.txt").touch()
-    Path("./tests/abc/xyz/file-4.txt").touch()
+    Path("./tmp/abc/file-1.txt").touch()
+    Path("./tmp/abc/file-2.txt").symlink_to("./tmp/abc/file-1.txt")
+    Path("./tmp/abc/xyz/file-3.txt").touch()
+    Path("./tmp/abc/xyz/file-4.txt").touch()
 
     Path("./456").mkdir()
     Path("./456/789").mkdir()
     Path("./456/file-8.txt").touch()
-    Path("./456/file-9.txt").symlink_to("./tests/abc/file-1.txt")
+    Path("./456/file-9.txt").symlink_to("./tmp/abc/file-1.txt")
     Path("./file-6.txt").touch()
-    Path("./file-7.txt").symlink_to("./tests/abc/file-1.txt")
+    Path("./file-7.txt").symlink_to("./tmp/abc/file-1.txt")
 
 
 def teardown_module():
@@ -71,8 +72,7 @@ def teardown_module():
     Path("example.rtf").unlink()
     Path("example.txt").unlink()
 
-    shutil.rmtree("./tests/abc/")
-    shutil.rmtree("./tests/123/")
+    shutil.rmtree("./tmp")
 
 
 # Fixtures --------------------------------------------------------------------
@@ -80,7 +80,7 @@ def teardown_module():
 def tree_expected_results():
     return json.dumps(
         {
-            "path": "./tests/abc",
+            "path": "./tmp/abc",
             "results": [
                 {
                     "path": "./def",
@@ -204,20 +204,20 @@ def test_copy_folder():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.cp("./tests/abc", "./tests/123")
+    result = pistachio.cp("./tmp/abc", "./tmp/123")
 
     assert result is True
-    assert Path("./tests/123").exists() is True
+    assert Path("./tmp/123").exists() is True
 
 
 def test_copy_symlink():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.cp("./tests/abc/file-2.txt", "./tests/123/file-5.txt")
+    result = pistachio.cp("./tmp/abc/file-2.txt", "./tmp/123/file-5.txt")
 
     assert result is True
-    assert Path("./tests/123/file-5.txt").is_symlink() is True
+    assert Path("./tmp/123/file-5.txt").is_symlink() is True
 
 
 def test_describe_schema_directory():
@@ -305,7 +305,7 @@ def test_make_directory():
     """
     Method to verify that a directory can be created.
     """
-    path_str = "./tests/abc/def"
+    path_str = "./tmp/abc/def"
     pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
@@ -315,7 +315,7 @@ def test_make_directory_recursively():
     """
     Method to verify that a directory path can be created recursively.
     """
-    path_str = "./tests/abc/ghi/jkl"
+    path_str = "./tmp/abc/ghi/jkl"
     pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
@@ -325,7 +325,7 @@ def test_mv_directory():
     """
     Method to confirm that a directory can be moved.
     """
-    result = pistachio.mv("./456", "./tests/123/456")
+    result = pistachio.mv("./456", "./tmp/123/456")
 
     assert result is True
 
@@ -334,7 +334,7 @@ def test_mv_file():
     """
     Method to confirm that a file can be moved.
     """
-    result = pistachio.mv("./file-6.txt", "./tests/abc/file-6.txt")
+    result = pistachio.mv("./file-6.txt", "./tmp/abc/file-6.txt")
 
     assert result is True
 
@@ -343,7 +343,7 @@ def test_mv_symlink():
     """
     Method to confirm that a symlink can be moved.
     """
-    result = pistachio.mv("./file-7.txt", "./tests/abc/file-7.txt")
+    result = pistachio.mv("./file-7.txt", "./tmp/abc/file-7.txt")
 
     assert result is True
 
@@ -416,7 +416,7 @@ def test_tree():
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    r = pistachio.tree("tests/abc")
+    r = pistachio.tree("./tmp/abc")
 
     assert schema_validation(r, TREE_SCHEMA) is True
     assert all(
@@ -429,7 +429,7 @@ def test_tree_results(tree_expected_results):
     Test to confirm that the tree method returns a list of dictionaries.
     """
     results = json.dumps(
-        pistachio.tree("./tests/abc"),
+        pistachio.tree("./tmp/abc"),
         indent=2,
         sort_keys=True
     )
