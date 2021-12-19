@@ -1,41 +1,9 @@
 from pathlib import Path
-from schema import Schema, And, Use, SchemaError
 from src import pistachio
 
 
-import json
 import pytest
 import shutil
-
-
-# Schema ----------------------------------------------------------------------
-TREE_SCHEMA = Schema({
-    "path": And(Use(str)),
-    "results": And(Use(list))
-})
-
-
-DESCRIBE_SCHEMA = Schema({
-    "path": And(Use(str)),
-    "exists": And(Use(bool)),
-    "is_directory": And(Use(bool)),
-    "is_file": And(Use(bool)),
-    "is_symlink": And(Use(bool)),
-    "name": And(Use(str)),
-    "stem": And(Use(str)),
-    "suffix": And(Use(str))
-})
-
-
-def schema_validation(example, schema):
-    """
-    Method to confirm with a dictionary matches a schema.
-    """
-    try:
-        schema.validate(example)
-        return True
-    except SchemaError:
-        return False
 
 
 # State -----------------------------------------------------------------------
@@ -75,114 +43,110 @@ def teardown_module():
 # Fixtures --------------------------------------------------------------------
 @pytest.fixture
 def tree_expected_results():
-    return json.dumps(
-        {
-            "path": "./tmp/abc",
-            "results": [
-                {
-                    "path": "./def",
-                    "exists": True,
-                    "is_directory": True,
-                    "is_file": False,
-                    "is_symlink": False,
-                    "name": "def",
-                    "stem": "def",
-                    "suffix": None
-                },
-                {
-                    "path": "./file-1.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": True,
-                    "is_symlink": False,
-                    "name": "file-1.txt",
-                    "stem": "file-1",
-                    "suffix": "txt"
-                },
-                {
-                    "path": "./file-2.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": False,
-                    "is_symlink": True,
-                    "name": "file-2.txt",
-                    "stem": "file-2",
-                    "suffix": "txt"
-                },
-                {
-                    "path": "./file-6.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": True,
-                    "is_symlink": False,
-                    "name": "file-6.txt",
-                    "stem": "file-6",
-                    "suffix": "txt"
-                },
-                {
-                    "path": "./file-7.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": False,
-                    "is_symlink": True,
-                    "name": "file-7.txt",
-                    "stem": "file-7",
-                    "suffix": "txt"
-                },
-                {
-                    "path": "./ghi",
-                    "exists": True,
-                    "is_directory": True,
-                    "is_file": False,
-                    "is_symlink": False,
-                    "name": "ghi",
-                    "stem": "ghi",
-                    "suffix": None
-                },
-                {
-                    "path": "./ghi/jkl",
-                    "exists": True,
-                    "is_directory": True,
-                    "is_file": False,
-                    "is_symlink": False,
-                    "name": "jkl",
-                    "stem": "jkl",
-                    "suffix": None
-                },
-                {
-                    "path": "./xyz",
-                    "exists": True,
-                    "is_directory": True,
-                    "is_file": False,
-                    "is_symlink": False,
-                    "name": "xyz",
-                    "stem": "xyz",
-                    "suffix": None
-                },
-                {
-                    "path": "./xyz/file-3.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": True,
-                    "is_symlink": False,
-                    "name": "file-3.txt",
-                    "stem": "file-3",
-                    "suffix": "txt"
-                },
-                {
-                    "path": "./xyz/file-4.txt",
-                    "exists": True,
-                    "is_directory": False,
-                    "is_file": True,
-                    "is_symlink": False,
-                    "name": "file-4.txt",
-                    "stem": "file-4",
-                    "suffix": "txt"
-                }
-            ]
-        },
-        indent=2,
-        sort_keys=True
+    return pistachio.Tree(
+        path="./tmp/abc",
+        results=[
+            pistachio.Pistachio(
+                path="./xyz",
+                exists=True,
+                is_directory=True,
+                is_file=False,
+                is_symlink=False,
+                name="xyz",
+                stem="xyz",
+                suffix=None
+            ),
+            pistachio.Pistachio(
+                path="./def",
+                exists=True,
+                is_directory=True,
+                is_file=False,
+                is_symlink=False,
+                name="def",
+                stem="def",
+                suffix=None
+            ),
+            pistachio.Pistachio(
+                path="./ghi",
+                exists=True,
+                is_directory=True,
+                is_file=False,
+                is_symlink=False,
+                name="ghi",
+                stem="ghi",
+                suffix=None
+            ),
+            pistachio.Pistachio(
+                path="./file-1.txt",
+                exists=True,
+                is_directory=False,
+                is_file=True,
+                is_symlink=False,
+                name="file-1.txt",
+                stem="file-1",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./file-2.txt",
+                exists=True,
+                is_directory=False,
+                is_file=False,
+                is_symlink=True,
+                name="file-2.txt",
+                stem="file-2",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./file-6.txt",
+                exists=True,
+                is_directory=False,
+                is_file=True,
+                is_symlink=False,
+                name="file-6.txt",
+                stem="file-6",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./file-7.txt",
+                exists=True,
+                is_directory=False,
+                is_file=False,
+                is_symlink=True,
+                name="file-7.txt",
+                stem="file-7",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./xyz/file-3.txt",
+                exists=True,
+                is_directory=False,
+                is_file=True,
+                is_symlink=False,
+                name="file-3.txt",
+                stem="file-3",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./xyz/file-4.txt",
+                exists=True,
+                is_directory=False,
+                is_file=True,
+                is_symlink=False,
+                name="file-4.txt",
+                stem="file-4",
+                suffix="txt"
+            ),
+            pistachio.Pistachio(
+                path="./ghi/jkl",
+                exists=True,
+                is_directory=True,
+                is_file=False,
+                is_symlink=False,
+                name="jkl",
+                stem="jkl",
+                suffix=None
+            )
+        ]
     )
 
 
@@ -222,7 +186,8 @@ def test_describe_schema_directory():
     Test to validate the describe method response for a directory.
     """
     example = pistachio.describe("tests")
-    assert schema_validation(example, DESCRIBE_SCHEMA) is True
+
+    assert isinstance(example, pistachio.Pistachio) is True
 
 
 def test_describe_schema_file():
@@ -230,7 +195,8 @@ def test_describe_schema_file():
     Test to validate the describe method response for a file.
     """
     example = pistachio.describe("README.md")
-    assert schema_validation(example, DESCRIBE_SCHEMA) is True
+
+    assert isinstance(example, pistachio.Pistachio) is True
 
 
 def test_describe_schema_symlink():
@@ -238,7 +204,8 @@ def test_describe_schema_symlink():
     Test to validate the describe method response for a symbolic link.
     """
     example = pistachio.describe("README.rst")
-    assert schema_validation(example, DESCRIBE_SCHEMA) is True
+
+    assert isinstance(example, pistachio.Pistachio) is True
 
 
 def test_exists_true():
@@ -260,6 +227,7 @@ def test_get_md5_hash():
     Test to confirm the get_md5_hash method returns False.
     """
     md5_hash_str = pistachio.get_md5_hash("./tmp/example.txt")
+
     assert md5_hash_str == "37c4b87edffc5d198ff5a185cee7ee09"
 
 
@@ -304,6 +272,7 @@ def test_ln():
     """
     link_path_str = "./tmp/shortcut.md"
     source_path_str = "../README.md"
+
     pistachio.ln(link_path_str, source_path_str)
 
     assert Path(link_path_str).exists() is True
@@ -315,6 +284,7 @@ def test_mkdir():
     Method to verify that a directory can be created.
     """
     path_str = "./tmp/abc/def"
+
     pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
@@ -325,6 +295,7 @@ def test_mkdir_recursively():
     Method to verify that a directory path can be created recursively.
     """
     path_str = "./tmp/abc/ghi/jkl"
+
     pistachio.mkdir(path_str)
 
     assert Path(path_str).exists() is True
@@ -425,25 +396,14 @@ def test_tree():
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    r = pistachio.tree("./tmp/abc")
-
-    assert schema_validation(r, TREE_SCHEMA) is True
-    assert all(
-        schema_validation(i, DESCRIBE_SCHEMA) is True for i in r["results"]
-    )
+    assert isinstance(pistachio.tree("./tmp/abc"), pistachio.Tree) is True
 
 
 def test_tree_results(tree_expected_results):
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    results = json.dumps(
-        pistachio.tree("./tmp/abc"),
-        indent=2,
-        sort_keys=True
-    )
-
-    assert tree_expected_results == results
+    assert tree_expected_results == pistachio.tree("./tmp/abc")
 
 
 def test_tree_no_directory():
