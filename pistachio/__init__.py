@@ -1,4 +1,6 @@
-__version__ = "0.6.0"
+"""
+Pistachio aims to simplify reoccurring tasks when working with the file system.
+"""
 
 
 from dataclasses import dataclass
