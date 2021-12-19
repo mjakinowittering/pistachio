@@ -1,3 +1,7 @@
+__version__ = "0.6.0"
+
+
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -7,6 +11,26 @@ import os
 import shutil
 
 
+# Classes ---------------------------------------------------------------------
+@dataclass
+class Pistachio:
+    path: str
+    exists: bool
+    is_directory: bool
+    is_file: bool
+    is_symlink: bool
+    name: str
+    stem: str
+    suffix: str
+
+
+@dataclass
+class Tree:
+    path: str
+    results: list
+
+
+# Public ----------------------------------------------------------------------
 def cp(source_path_str, target_path_str):
     """
     Method to copy and paste a resource from one location to another.
@@ -35,16 +59,16 @@ def describe(path_str):
     """
     Method to describe the type of resources.
     """
-    return {
-        "path": path_str,
-        "exists": exists(path_str),
-        "is_directory": is_directory(path_str),
-        "is_file": is_file(path_str),
-        "is_symlink": is_symlink(path_str),
-        "name": name(path_str),
-        "stem": stem(path_str),
-        "suffix": suffix(path_str)
-    }
+    return Pistachio(
+        path=path_str,
+        exists=exists(path_str),
+        is_directory=is_directory(path_str),
+        is_file=is_file(path_str),
+        is_symlink=is_symlink(path_str),
+        name=name(path_str),
+        stem=stem(path_str),
+        suffix=suffix(path_str)
+    )
 
 
 def exists(path_str):
@@ -187,10 +211,10 @@ def tree(path_str):
 
         os.chdir(initial_path_str)
 
-        return {
-            "path": path_str,
-            "results": sorted(results_lst, key=lambda d: d['path'])
-        }
+        return Tree(
+            path=path_str,
+            results=results_lst
+        )
     else:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), path_str
