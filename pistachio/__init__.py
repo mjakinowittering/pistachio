@@ -1,3 +1,6 @@
+__version__ = "1.0"
+
+
 from dataclasses import dataclass
 from pathlib import Path
 

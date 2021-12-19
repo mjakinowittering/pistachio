@@ -30,20 +30,9 @@ To use pistachio you can inport the module by running the following commands.
 Method to return a description for the resource.
 
 ```python
->>> print(json.dumps(pistachio.describe("README.md"), sort_keys=2, indent=2))
-{
-  "exists": true,
-  "is_directory": false,
-  "is_file": true,
-  "is_symlink": false,
-  "name": "README.md",
-  "path": "README.md",
-  "stem": "README",
-  "suffix": "md"
-}
+>>> pistachio.describe("README.md")
+Pistachio(path='README.md', exists=True, is_directory=False, is_file=True, is_symlink=False, name='README.md', stem='README', suffix='md')
 ```
-
-print(json.dumps(pistachio.tree("src"), sort_keys=2, indent=2))
 
 ### Exists
 
@@ -123,30 +112,6 @@ True
 This method will return a list of directories, files and symlinks below a specific directory.
 
 ```python
->>> print(json.dumps(pistachio.tree("src"), sort_keys=2, indent=2))
-{
-  "path": "src",
-  "results": [
-    {
-      "exists": true,
-      "is_directory": false,
-      "is_file": true,
-      "is_symlink": false,
-      "name": "__init__.py",
-      "path": "./__init__.py",
-      "stem": "__init__",
-      "suffix": "py"
-    },
-    {
-      "exists": true,
-      "is_directory": false,
-      "is_file": true,
-      "is_symlink": false,
-      "name": "pistachio.py",
-      "path": "./pistachio.py",
-      "stem": "pistachio",
-      "suffix": "py"
-    }
-  ]
-}
+>>> pistachio.tree("src")
+Tree(path='pistachio', results=[Pistachio(path='./__init__.py', exists=True, is_directory=False, is_file=True, is_symlink=False, name='__init__.py', stem='__init__', suffix='py')])
 ```

@@ -1,7 +1,7 @@
 from pathlib import Path
-from src import pistachio
 
 
+import pistachio
 import pytest
 import shutil
 
