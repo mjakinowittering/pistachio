@@ -6,7 +6,10 @@ Pistachio aims to simplify reoccurring tasks when working with the file system.
 To install pistachio, along with the tools you need to develop and run tests, run the following in your virtualenv:
 
 ```bash
-$ pip install -e .[dev]
+$ python -m venv env
+$ source /env/bin/activate
+$ pip install flit
+$ flit install
 ```
 
 ## Install
