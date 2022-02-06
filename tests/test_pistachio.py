@@ -1,6 +1,7 @@
 from pathlib import Path
 
 
+import os
 import pistachio
 import pytest
 import shutil
@@ -44,10 +45,10 @@ def teardown_module():
 @pytest.fixture
 def tree_expected_results():
     return pistachio.Tree(
-        path="./tmp/abc",
+        path=f"""{os.getcwd()}/tmp/abc""",
         results=[
             pistachio.Pistachio(
-                path="./xyz",
+                path=f"""{os.getcwd()}/tmp/abc/xyz""",
                 exists=True,
                 is_directory=True,
                 is_file=False,
@@ -57,7 +58,7 @@ def tree_expected_results():
                 suffix=None
             ),
             pistachio.Pistachio(
-                path="./def",
+                path=f"""{os.getcwd()}/tmp/abc/def""",
                 exists=True,
                 is_directory=True,
                 is_file=False,
@@ -67,7 +68,7 @@ def tree_expected_results():
                 suffix=None
             ),
             pistachio.Pistachio(
-                path="./ghi",
+                path=f"""{os.getcwd()}/tmp/abc/ghi""",
                 exists=True,
                 is_directory=True,
                 is_file=False,
@@ -77,7 +78,7 @@ def tree_expected_results():
                 suffix=None
             ),
             pistachio.Pistachio(
-                path="./file-1.txt",
+                path=f"""{os.getcwd()}/tmp/abc/file-1.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=True,
@@ -87,7 +88,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./file-2.txt",
+                path=f"""{os.getcwd()}/tmp/abc/file-2.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=False,
@@ -97,7 +98,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./file-6.txt",
+                path=f"""{os.getcwd()}/tmp/abc/file-6.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=True,
@@ -107,7 +108,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./file-7.txt",
+                path=f"""{os.getcwd()}/tmp/abc/file-7.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=False,
@@ -117,7 +118,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./xyz/file-3.txt",
+                path=f"""{os.getcwd()}/tmp/abc/xyz/file-3.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=True,
@@ -127,7 +128,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./xyz/file-4.txt",
+                path=f"""{os.getcwd()}/tmp/abc/xyz/file-4.txt""",
                 exists=True,
                 is_directory=False,
                 is_file=True,
@@ -137,7 +138,7 @@ def tree_expected_results():
                 suffix="txt"
             ),
             pistachio.Pistachio(
-                path="./ghi/jkl",
+                path=f"""{os.getcwd()}/tmp/abc/ghi/jkl""",
                 exists=True,
                 is_directory=True,
                 is_file=False,
@@ -368,6 +369,50 @@ def test_suffix_example_file():
     Test to confirm the suffix method returns ".txt".
     """
     assert pistachio.suffix("./tmp/example.txt") == "txt"
+
+
+def test_path_builder_abs():
+    """
+    Method to confirm the path_builder returns an absolute path.
+    """
+    expected = "/tmp/foo/bar.txt"
+
+    result = pistachio.path_builder(
+        "abs",
+        "/tmp",
+        *[
+            "./foo",
+            "bar.txt"
+        ]
+    )
+
+    assert result.endswith(expected)
+
+
+def test_path_builder_rel():
+    """
+    Method to confirm the path_builder returns a relative path.
+    """
+    expected = "foo/bar.txt"
+
+    result = pistachio.path_builder(
+        "rel",
+        "/tmp",
+        *[
+            "./foo",
+            "bar.txt"
+        ]
+    )
+
+    assert expected == result
+
+
+def test_path_builder_error():
+    """
+    Method to confirm the path_builder returns value error.
+    """
+    with pytest.raises(ValueError):
+        pistachio.path_builder("foo", "tmp")
 
 
 def test_touch_new_file_true():
