@@ -2,7 +2,7 @@
 Pistachio aims to simplify reoccurring tasks when working with the file system.
 """
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 
 from dataclasses import dataclass
@@ -153,6 +153,24 @@ def name(path_str):
     return os.path.basename(path_str)
 
 
+def path_builder(type, root, *args):
+    """
+    Method to build a clear relative or absolute path to a resource.
+    """
+    if type in ["abs", "rel"]:
+        if type == "rel":
+            return os.path.normpath("/".join(args))
+        else:
+            return os.path.join(
+                root,
+                os.path.normpath("/".join(args))
+            )
+    else:
+        raise ValueError(
+            """{type} but be 'abs' or 'rel'."""
+        )
+
+
 def stem(path_str):
     """
     Return the stem of the last item in the path.
@@ -201,22 +219,41 @@ def tree(path_str):
 
     if exists(path_str) and is_directory(path_str):
         initial_path_str = os.getcwd()
+
         os.chdir(path_str)
 
-        for root, directories, filenames in os.walk("."):
-            for directory in directories:
+        for base_str, directories_lst, filenames_lst in os.walk("."):
+            for directory_str in directories_lst:
                 results_lst.append(
-                    describe(f"""{root}/{directory}""")
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                directory_str
+                            ]
+                        )
+                    )
                 )
-            for filename in filenames:
+            for filename_str in filenames_lst:
                 results_lst.append(
-                    describe(f"""{root}/{filename}""")
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                filename_str
+                            ]
+                        )
+                    )
                 )
 
         os.chdir(initial_path_str)
 
         return Tree(
-            path=path_str,
+            path=os.path.realpath(path_str),
             results=results_lst
         )
     else:
