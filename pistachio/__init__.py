@@ -2,7 +2,7 @@
 Pistachio aims to simplify reoccurring tasks when working with the file system.
 """
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 
 
 from dataclasses import dataclass
