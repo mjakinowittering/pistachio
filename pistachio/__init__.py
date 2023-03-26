@@ -18,6 +18,11 @@ import shutil
 # Classes ---------------------------------------------------------------------
 @dataclass
 class Pistachio:
+    """
+    Pistachio class describing a record in the file system.
+    """
+    # pylint: disable=too-many-instance-attributes
+    # Eight is completely neccessary 😉
     path: str
     exists: bool
     is_directory: bool
@@ -30,6 +35,9 @@ class Pistachio:
 
 @dataclass
 class Tree:
+    """
+    Tree class describing the hierarchy of records in the file system.
+    """
     path: str
     exists: bool
     is_directory: bool
@@ -81,25 +89,25 @@ def exists(path_str):
     """
     Method to return True or False whether a resource exists.
     """
-    if is_symlink(path_str):
-        return True
-    else:
-        return Path(path_str).exists()
+    return True if is_symlink(path_str) else Path(path_str).exists()
 
 
 def get_md5_hash(path_str):
     """
     Method to return the MD5 hash of a file.
     """
+    md5_hash_str = None
     if exists(path_str) is True and is_file(path_str) is True:
         md5_hash = hashlib.md5()
+
         with open(path_str, "rb") as fh:
             for block in iter(lambda: fh.read(4096), b""):
                 md5_hash.update(block)
             fh.close()
-        return md5_hash.hexdigest()
-    else:
-        return None
+
+        md5_hash_str = md5_hash.hexdigest()
+
+    return md5_hash_str
 
 
 def is_directory(path_str):
@@ -155,22 +163,20 @@ def name(path_str):
     return os.path.basename(path_str)
 
 
-def path_builder(type, root, *args):
+def path_builder(path_type, root, *args):
     """
     Method to build a clear relative or absolute path to a resource.
     """
-    if type in ["abs", "rel"]:
-        if type == "rel":
-            return os.path.normpath("/".join(args))
-        else:
-            return os.path.join(
-                root,
-                os.path.normpath("/".join(args))
-            )
+    path_str = None
+
+    if path_type == "abs":
+        path_str = os.path.join(root, os.path.normpath("/".join(args)))
+    elif path_type == "rel":
+        path_str = os.path.normpath("/".join(args))
     else:
-        raise ValueError(
-            """{type} but be 'abs' or 'rel'."""
-        )
+        raise ValueError("""{type} but be 'abs' or 'rel'.""")
+
+    return path_str
 
 
 def scan_fs(path_str):
@@ -212,14 +218,13 @@ def scan_fs(path_str):
                         )
                     )
                 )
-
         os.chdir(initial_path_str)
-
-        return results_lst
     else:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), path_str
         )
+
+    return results_lst
 
 
 def stem(path_str):
@@ -233,32 +238,35 @@ def suffix(path_str):
     """
     Return the file extension suffix of the last item in the path.
     """
-    suffix = Path(path_str).suffix
+    suffix_str = Path(path_str).suffix
 
     clean = [
         (".", "")
     ]
 
     for old, new in clean:
-        suffix = suffix.replace(old, new)
+        suffix_str = suffix_str.replace(old, new)
 
-    return suffix if suffix != '' else None
+    return suffix_str if suffix_str != '' else None
 
 
 def touch(path_str):
     """
     Method to generated an empty file.
     """
+    created = False
+
     if exists(path_str) is False:
         try:
-            open(path_str, "a").close()
-            return True
-        except FileNotFoundError:
+            with open(path_str, "a", encoding="utf-8") as file_handle:
+                file_handle.write("\n")
+            created = exists(path_str)
+        except FileNotFoundError as exc:
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), path_str
-            )
-    else:
-        return False
+            ) from exc
+
+    return created
 
 
 def tree(path_str):
