@@ -1,10 +1,15 @@
+"""
+Tests for Pistachio
+"""
+
+
 from pathlib import Path
 
 
 import os
-import pistachio
-import pytest
 import shutil
+import pytest
+import pistachio
 
 
 # State -----------------------------------------------------------------------
@@ -14,9 +19,8 @@ def setup_module():
     """
     Path("./tmp").mkdir()
 
-    with open("./tmp/example.txt", "w") as fh:
-        fh.write("The quick brown fox jumps over the lazy dog\n")
-        fh.close()
+    with open("./tmp/example.txt", "w", encoding="utf-8") as file_handle:
+        file_handle.write("The quick brown fox jumps over the lazy dog\n")
 
     Path("./tmp/abc").mkdir()
     Path("./tmp/abc/xyz").mkdir()
@@ -44,6 +48,9 @@ def teardown_module():
 # Fixtures --------------------------------------------------------------------
 @pytest.fixture
 def scan_fs_expected_results():
+    """
+    Fixture for asserting excepted values.
+    """
     return [
         pistachio.Pistachio(
             path=f"""{os.getcwd()}/tmp/abc/xyz""",
@@ -150,6 +157,9 @@ def scan_fs_expected_results():
 
 @pytest.fixture
 def tree_expected_results():
+    """
+    Fixture for asserting excepted values.
+    """
     return pistachio.Tree(
         path=f"""{os.getcwd()}/tmp/abc""",
         exists=True,
