@@ -7,7 +7,7 @@ To install pistachio, along with the tools you need to develop and run tests, ru
 
 ```bash
 $ python -m venv env
-$ source /env/bin/activate
+$ source env/bin/activate
 $ pip install flit
 $ flit install
 ```
