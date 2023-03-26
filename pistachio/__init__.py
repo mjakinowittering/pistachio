@@ -34,6 +34,56 @@ class Tree:
     results: list
 
 
+# Private ---------------------------------------------------------------------
+def _scan_fs(path_str):
+    """
+    Private method to walk through a directory tree and discover all files
+    and directories on the file system.
+    """
+    results_lst = []
+
+    if exists(path_str) and is_directory(path_str):
+        initial_path_str = os.getcwd()
+
+        os.chdir(path_str)
+
+        for base_str, directories_lst, filenames_lst in os.walk("."):
+            for directory_str in directories_lst:
+                results_lst.append(
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                directory_str
+                            ]
+                        )
+                    )
+                )
+            for filename_str in filenames_lst:
+                results_lst.append(
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                filename_str
+                            ]
+                        )
+                    )
+                )
+
+        os.chdir(initial_path_str)
+
+        return results_lst
+    else:
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), path_str
+        )
+
+
 # Public ----------------------------------------------------------------------
 def cp(source_path_str, target_path_str):
     """
@@ -213,48 +263,13 @@ def touch(path_str):
 def tree(path_str):
     """
     Method to walk through a directory tree and discover all files
-    and directories on the file system.
+    and directories on the file system. Returns a Tree object with a list of
+    Pistachio results.
     """
-    results_lst = []
-
     if exists(path_str) and is_directory(path_str):
-        initial_path_str = os.getcwd()
-
-        os.chdir(path_str)
-
-        for base_str, directories_lst, filenames_lst in os.walk("."):
-            for directory_str in directories_lst:
-                results_lst.append(
-                    describe(
-                        path_builder(
-                            "abs",
-                            os.getcwd(),
-                            *[
-                                base_str,
-                                directory_str
-                            ]
-                        )
-                    )
-                )
-            for filename_str in filenames_lst:
-                results_lst.append(
-                    describe(
-                        path_builder(
-                            "abs",
-                            os.getcwd(),
-                            *[
-                                base_str,
-                                filename_str
-                            ]
-                        )
-                    )
-                )
-
-        os.chdir(initial_path_str)
-
         return Tree(
             path=os.path.realpath(path_str),
-            results=results_lst
+            results=_scan_fs(path_str)
         )
     else:
         raise FileNotFoundError(

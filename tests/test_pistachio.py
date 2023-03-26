@@ -43,6 +43,112 @@ def teardown_module():
 
 # Fixtures --------------------------------------------------------------------
 @pytest.fixture
+def scan_fs_expected_results():
+    return [
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/xyz""",
+            exists=True,
+            is_directory=True,
+            is_file=False,
+            is_symlink=False,
+            name="xyz",
+            stem="xyz",
+            suffix=None
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/def""",
+            exists=True,
+            is_directory=True,
+            is_file=False,
+            is_symlink=False,
+            name="def",
+            stem="def",
+            suffix=None
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/ghi""",
+            exists=True,
+            is_directory=True,
+            is_file=False,
+            is_symlink=False,
+            name="ghi",
+            stem="ghi",
+            suffix=None
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/file-1.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=True,
+            is_symlink=False,
+            name="file-1.txt",
+            stem="file-1",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/file-2.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=False,
+            is_symlink=True,
+            name="file-2.txt",
+            stem="file-2",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/file-6.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=True,
+            is_symlink=False,
+            name="file-6.txt",
+            stem="file-6",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/file-7.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=False,
+            is_symlink=True,
+            name="file-7.txt",
+            stem="file-7",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/xyz/file-3.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=True,
+            is_symlink=False,
+            name="file-3.txt",
+            stem="file-3",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/xyz/file-4.txt""",
+            exists=True,
+            is_directory=False,
+            is_file=True,
+            is_symlink=False,
+            name="file-4.txt",
+            stem="file-4",
+            suffix="txt"
+        ),
+        pistachio.Pistachio(
+            path=f"""{os.getcwd()}/tmp/abc/ghi/jkl""",
+            exists=True,
+            is_directory=True,
+            is_file=False,
+            is_symlink=False,
+            name="jkl",
+            stem="jkl",
+            suffix=None
+        )
+    ]
+
+
+@pytest.fixture
 def tree_expected_results():
     return pistachio.Tree(
         path=f"""{os.getcwd()}/tmp/abc""",
@@ -413,6 +519,28 @@ def test_path_builder_error():
     """
     with pytest.raises(ValueError):
         pistachio.path_builder("foo", "tmp")
+
+
+def test_scan_fs():
+    """
+    Test to confirm that the tree method returns a list of dictionaries.
+    """
+    assert isinstance(pistachio._scan_fs("./tmp/abc"), list) is True
+
+
+def test_scan_fs_results(scan_fs_expected_results):
+    """
+    Test to confirm that the tree method returns a list of dictionaries.
+    """
+    assert scan_fs_expected_results == pistachio._scan_fs("./tmp/abc")
+
+
+def test_scan_fs_no_directory():
+    """
+    Test to confirm the tree method raised FileNotFoundError exception.
+    """
+    with pytest.raises(FileNotFoundError):
+        pistachio._scan_fs("docs")
 
 
 def test_touch_new_file_true():
