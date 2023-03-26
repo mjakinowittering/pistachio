@@ -274,7 +274,7 @@ def test_copy_file():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.cp("./tmp/example.txt", "./tmp/example.rtf")
+    result = pistachio.copy("./tmp/example.txt", "./tmp/example.rtf")
 
     assert result is True
     assert Path("./tmp/example.rtf").exists() is True
@@ -284,7 +284,7 @@ def test_copy_folder():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.cp("./tmp/abc", "./tmp/123")
+    result = pistachio.copy("./tmp/abc", "./tmp/123")
 
     assert result is True
     assert Path("./tmp/123").exists() is True
@@ -294,7 +294,7 @@ def test_copy_symlink():
     """
     Test the method to copy and paste a file on the filesystem.
     """
-    result = pistachio.cp("./tmp/abc/file-2.txt", "./tmp/123/file-5.txt")
+    result = pistachio.copy("./tmp/abc/file-2.txt", "./tmp/123/file-5.txt")
 
     assert result is True
     assert Path("./tmp/123/file-5.txt").is_symlink() is True
@@ -385,19 +385,6 @@ def test_is_file_false():
     assert pistachio.is_file("tests") is False
 
 
-def test_ln():
-    """
-    Method to verify that a symlink can be created.
-    """
-    link_path_str = "./tmp/shortcut.md"
-    source_path_str = "../README.md"
-
-    pistachio.ln(link_path_str, source_path_str)
-
-    assert Path(link_path_str).exists() is True
-    assert Path(link_path_str).is_symlink() is True
-
-
 def test_mkdir():
     """
     Method to verify that a directory can be created.
@@ -420,29 +407,42 @@ def test_mkdir_recursively():
     assert Path(path_str).exists() is True
 
 
-def test_mv_directory():
+def test_mklink():
+    """
+    Method to verify that a symlink can be created.
+    """
+    link_path_str = "./tmp/shortcut.md"
+    source_path_str = "../README.md"
+
+    pistachio.mklink(link_path_str, source_path_str)
+
+    assert Path(link_path_str).exists() is True
+    assert Path(link_path_str).is_symlink() is True
+
+
+def test_move_directory():
     """
     Method to confirm that a directory can be moved.
     """
-    result = pistachio.mv("./tmp/456", "./tmp/123/456")
+    result = pistachio.move("./tmp/456", "./tmp/123/456")
 
     assert result is True
 
 
-def test_mv_file():
+def test_move_file():
     """
     Method to confirm that a file can be moved.
     """
-    result = pistachio.mv("./file-6.txt", "./tmp/abc/file-6.txt")
+    result = pistachio.move("./file-6.txt", "./tmp/abc/file-6.txt")
 
     assert result is True
 
 
-def test_mv_symlink():
+def test_move_symlink():
     """
     Method to confirm that a symlink can be moved.
     """
-    result = pistachio.mv("./file-7.txt", "./tmp/abc/file-7.txt")
+    result = pistachio.move("./file-7.txt", "./tmp/abc/file-7.txt")
 
     assert result is True
 

@@ -45,7 +45,7 @@ class Tree:
 
 
 # Methods ---------------------------------------------------------------------
-def cp(source_path_str, target_path_str):
+def copy(source_path_str, target_path_str):
     """
     Method to copy and paste a resource from one location to another.
     """
@@ -97,6 +97,7 @@ def get_md5_hash(path_str):
     Method to return the MD5 hash of a file.
     """
     md5_hash_str = None
+
     if exists(path_str) is True and is_file(path_str) is True:
         md5_hash = hashlib.md5()
 
@@ -131,7 +132,14 @@ def is_symlink(path_str):
     return Path(path_str).is_symlink()
 
 
-def ln(link_path_str, source_path_str):
+def mkdir(path_str):
+    """
+    Method to create a new directory or directories recursively.
+    """
+    return Path(path_str).mkdir(parents=True, exist_ok=True)
+
+
+def mklink(link_path_str, source_path_str):
     """
     Method to make a Symbolic Link.
     """
@@ -140,14 +148,7 @@ def ln(link_path_str, source_path_str):
     return exists(link_path_str)
 
 
-def mkdir(path_str):
-    """
-    Method to create a new directory or directories recursively.
-    """
-    return Path(path_str).mkdir(parents=True, exist_ok=True)
-
-
-def mv(source_path_str, target_path_str):
+def move(source_path_str, target_path_str):
     """
     Method to move a resource from one location to another.
     """
