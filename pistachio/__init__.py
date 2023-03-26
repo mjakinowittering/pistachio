@@ -34,57 +34,7 @@ class Tree:
     results: list
 
 
-# Private ---------------------------------------------------------------------
-def _scan_fs(path_str):
-    """
-    Private method to walk through a directory tree and discover all files
-    and directories on the file system.
-    """
-    results_lst = []
-
-    if exists(path_str) and is_directory(path_str):
-        initial_path_str = os.getcwd()
-
-        os.chdir(path_str)
-
-        for base_str, directories_lst, filenames_lst in os.walk("."):
-            for directory_str in directories_lst:
-                results_lst.append(
-                    describe(
-                        path_builder(
-                            "abs",
-                            os.getcwd(),
-                            *[
-                                base_str,
-                                directory_str
-                            ]
-                        )
-                    )
-                )
-            for filename_str in filenames_lst:
-                results_lst.append(
-                    describe(
-                        path_builder(
-                            "abs",
-                            os.getcwd(),
-                            *[
-                                base_str,
-                                filename_str
-                            ]
-                        )
-                    )
-                )
-
-        os.chdir(initial_path_str)
-
-        return results_lst
-    else:
-        raise FileNotFoundError(
-            errno.ENOENT, os.strerror(errno.ENOENT), path_str
-        )
-
-
-# Public ----------------------------------------------------------------------
+# Methods ---------------------------------------------------------------------
 def cp(source_path_str, target_path_str):
     """
     Method to copy and paste a resource from one location to another.
@@ -218,6 +168,55 @@ def path_builder(type, root, *args):
     else:
         raise ValueError(
             """{type} but be 'abs' or 'rel'."""
+        )
+
+
+def _scan_fs(path_str):
+    """
+    Private method to walk through a directory tree and discover all files
+    and directories on the file system.
+    """
+    results_lst = []
+
+    if exists(path_str) and is_directory(path_str):
+        initial_path_str = os.getcwd()
+
+        os.chdir(path_str)
+
+        for base_str, directories_lst, filenames_lst in os.walk("."):
+            for directory_str in directories_lst:
+                results_lst.append(
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                directory_str
+                            ]
+                        )
+                    )
+                )
+            for filename_str in filenames_lst:
+                results_lst.append(
+                    describe(
+                        path_builder(
+                            "abs",
+                            os.getcwd(),
+                            *[
+                                base_str,
+                                filename_str
+                            ]
+                        )
+                    )
+                )
+
+        os.chdir(initial_path_str)
+
+        return results_lst
+    else:
+        raise FileNotFoundError(
+            errno.ENOENT, os.strerror(errno.ENOENT), path_str
         )
 
 

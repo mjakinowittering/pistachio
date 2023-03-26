@@ -152,6 +152,8 @@ def scan_fs_expected_results():
 def tree_expected_results():
     return pistachio.Tree(
         path=f"""{os.getcwd()}/tmp/abc""",
+        exists=True,
+        is_directory=True,
         results=[
             pistachio.Pistachio(
                 path=f"""{os.getcwd()}/tmp/abc/xyz""",
@@ -525,14 +527,14 @@ def test_scan_fs():
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    assert isinstance(pistachio._scan_fs("./tmp/abc"), list) is True
+    assert isinstance(pistachio.scan_fs("./tmp/abc"), list) is True
 
 
 def test_scan_fs_results(scan_fs_expected_results):
     """
     Test to confirm that the tree method returns a list of dictionaries.
     """
-    assert scan_fs_expected_results == pistachio._scan_fs("./tmp/abc")
+    assert scan_fs_expected_results == pistachio.scan_fs("./tmp/abc")
 
 
 def test_scan_fs_no_directory():
@@ -540,7 +542,7 @@ def test_scan_fs_no_directory():
     Test to confirm the tree method raised FileNotFoundError exception.
     """
     with pytest.raises(FileNotFoundError):
-        pistachio._scan_fs("docs")
+        pistachio.scan_fs("docs")
 
 
 def test_touch_new_file_true():
