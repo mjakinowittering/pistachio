@@ -31,6 +31,8 @@ class Pistachio:
 @dataclass
 class Tree:
     path: str
+    exists: bool
+    is_directory: bool
     results: list
 
 
@@ -171,7 +173,7 @@ def path_builder(type, root, *args):
         )
 
 
-def _scan_fs(path_str):
+def scan_fs(path_str):
     """
     Private method to walk through a directory tree and discover all files
     and directories on the file system.
@@ -265,12 +267,18 @@ def tree(path_str):
     and directories on the file system. Returns a Tree object with a list of
     Pistachio results.
     """
+    tree_obj = Tree(
+        path=os.path.realpath(path_str),
+        exists=exists(path_str),
+        is_directory=is_directory(path_str),
+        results=[]
+    )
+
     if exists(path_str) and is_directory(path_str):
-        return Tree(
-            path=os.path.realpath(path_str),
-            results=_scan_fs(path_str)
-        )
+        tree_obj.results = scan_fs(path_str)
     else:
         raise FileNotFoundError(
             errno.ENOENT, os.strerror(errno.ENOENT), path_str
         )
+
+    return tree_obj
