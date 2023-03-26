@@ -100,10 +100,10 @@ def get_md5_hash(path_str):
     if exists(path_str) is True and is_file(path_str) is True:
         md5_hash = hashlib.md5()
 
-        with open(path_str, "rb") as fh:
-            for block in iter(lambda: fh.read(4096), b""):
+        with open(path_str, "rb") as file_handle:
+            for block in iter(lambda: file_handle.read(4096), b""):
                 md5_hash.update(block)
-            fh.close()
+            file_handle.close()
 
         md5_hash_str = md5_hash.hexdigest()
 
